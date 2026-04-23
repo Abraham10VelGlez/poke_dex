@@ -6,18 +6,49 @@
     <title>Poke Dex</title>
     <link rel="stylesheet" href="./index.css" />
   </head>
-  <body>
-    <div class="shimmer-text">Pokédex</div>
 
-    <div class="toggle-wrapper">
-      <input type="checkbox" id="toggle" />
-      <div class="glow"></div>
-      <label for="toggle" class="toggle-track">
-        <div class="toggle-thumb">
-          <div class="icon-moon"></div>
-          <div class="icon-sun"></div>
-        </div>
-      </label>
+  <body>
+    <div class="header">
+      <div class="shimmer-text">Pokédex</div>
+
+      <div class="toggle-wrapper">
+        <input type="checkbox" id="toggle" />
+        <div class="glow"></div>
+        <label for="toggle" class="toggle-track">
+          <div class="toggle-thumb">
+            <div class="icon-moon"></div>
+            <div class="icon-sun"></div>
+          </div>
+        </label>
+      </div>
     </div>
+    <input type="checkbox" id="close-modal" />
+
+    <div class="modal">
+      <div class="modal-content">
+        <div class="container">
+          <div class="card">
+            <h2>¡Bienvenido a Pokedex!</h2>
+            <p>Estamos en desarrollo sitio... free</p>
+            <label for="close-modal" class="btn-close">Cerrar</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const modal = document.querySelector(".modal");
+      const btn = document.querySelector(".btn-close");
+
+      btn.addEventListener("click", () => {
+        modal.classList.add("hide");
+      });
+
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.classList.add("hide");
+        }
+      });
+    </script>
   </body>
 </html>

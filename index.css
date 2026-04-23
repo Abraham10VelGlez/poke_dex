@@ -65,11 +65,11 @@
           justify-content: center;
           align-items: center;
           background: #08080b;
-          font-family:
+          /* font-family:
               -apple-system,
               BlinkMacSystemFont,
               Segoe UI,
-              Roboto;
+              Roboto; */
           transition: 0.7s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
@@ -120,8 +120,10 @@
 
       .toggle-wrapper {
           position: relative;
-          width: 300px;
-          height: 110px;
+          width: 150px;
+          /* tamaño del theme btn */
+          height: 95px;
+
       }
 
       /* Input */
@@ -142,15 +144,20 @@
           z-index: -1;
       }
 
+      #toggle:checked~.toggle-track .toggle-thumb {
+          transform: translateX(calc(100% - 30px));
+      }
+
+      /* 
       #toggle:checked~.glow {
           background: radial-gradient(circle, #ff9b3d55 0%, transparent 65%);
-      }
+      } */
 
       /* TRACK */
 
       .toggle-track {
           position: absolute;
-          inset: 0;
+          inset: 28px;
           border-radius: 60px;
           background: linear-gradient(180deg,
                   #b7a9ff 0%,
@@ -196,8 +203,8 @@
           position: absolute;
           top: 10px;
           left: 10px;
-          width: 90px;
-          height: 90px;
+          width: 20px;
+          height: 20px;
           border-radius: 50%;
           background: radial-gradient(circle at 30% 30%, #2a2aff, #020617 70%);
           box-shadow:
@@ -221,7 +228,8 @@
       }
 
       #toggle:checked~.toggle-track .toggle-thumb {
-          transform: translateX(190px);
+          /* tamaño del theme btn */
+          transform: translateX(52px);
           background: radial-gradient(circle at 30% 30%, #ffb36a, #1c1917 70%);
       }
 
@@ -238,10 +246,10 @@
           border-radius: 50%;
           /* background: #e0e7ff; */
 
-          /* background-image: url('./img/pokeblack.png');
+          background-image: url('./img/pokeblack.png');
           background-size: cover;
           background-position: center;
-          background-repeat: no-repeat; */
+          background-repeat: no-repeat;
 
           box-shadow: 0 0 20px #c7d2fe;
       }
@@ -266,10 +274,10 @@
           height: 32px;
           border-radius: 50%;
 
-          /* background-image: url('./img/pokeamar.png');
+          background-image: url('./img/pokeamar.png');
           background-size: cover;
           background-position: center;
-          background-repeat: no-repeat; */
+          background-repeat: no-repeat;
 
           box-shadow: 0 0 22px #ffedd5;
       }
@@ -285,10 +293,248 @@
 
       /* ICON TOGGLE */
 
+      .icon-moon {
+          opacity: 1;
+          transition: 0.3s;
+      }
+
+      .icon-sun {
+          opacity: 0;
+          transition: 0.3s;
+      }
+
       #toggle:checked~.toggle-track .icon-moon {
           opacity: 0;
       }
 
       #toggle:checked~.toggle-track .icon-sun {
           opacity: 1;
+      }
+
+
+
+
+
+
+
+      .header {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          /* centra el título */
+          width: 100%;
+      }
+
+      /* Título centrado real */
+      .shimmer-text {
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+      }
+
+      /* Botón a la derecha */
+      .toggle-wrapper {
+          margin-left: auto;
+      }
+
+
+
+
+
+
+      /*modal css*/
+
+
+      .modal {
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.6);
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+
+          opacity: 1;
+          visibility: visible;
+
+          transition: 0.3s;
+      }
+
+
+      .modal-content {
+          background: white;
+          padding: 30px;
+          border-radius: 12px;
+          text-align: center;
+          min-width: 250px;
+      }
+
+
+      .btn-close {
+          margin-top: 15px;
+          display: inline-block;
+          padding: 8px 16px;
+          background: black;
+          color: white;
+          cursor: pointer;
+          border-radius: 8px;
+      }
+
+
+      #close-modal:checked~.modal {
+          opacity: 0;
+          visibility: hidden;
+      }
+
+
+      .modal-content {
+          transform: scale(0.8);
+          transition: 0.3s;
+      }
+
+      .modal {
+          opacity: 0;
+          animation: fadeIn 0.4s forwards;
+      }
+
+      @keyframes fadeIn {
+          to {
+              opacity: 1;
+          }
+      }
+
+      .modal-content {
+          animation: zoomIn 0.4s forwards;
+      }
+
+      @keyframes zoomIn {
+          to {
+              transform: scale(1);
+          }
+      }
+
+
+
+      .btn-close {
+          margin-top: 15px;
+          padding: 10px 18px;
+          background: #111;
+          color: white;
+          border-radius: 10px;
+          cursor: pointer;
+          transition: all 0.25s ease;
+      }
+
+      .btn-close:hover {
+          transform: translateY(-2px) scale(1.05);
+          background: #333;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      }
+
+      .btn-close:active {
+          transform: scale(0.95);
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+
+
+    
+
+      /* CARD EFECTO */
+
+      @property --angle {
+          syntax: "<angle>";
+          initial-value: 0deg;
+          inherits: false;
+      }
+
+      @keyframes spin {
+          to {
+              --angle: 360deg;
+          }
+      }
+
+      .container {
+          background: linear-gradient(135deg, #fff 0%, #ffffff 100%);
+          padding-bottom: 4px;
+          border-radius: 14px;
+          transition: all 0.3s ease;
+      }
+
+      .container:has(.card:hover) {
+          background: conic-gradient(from var(--angle),
+                  #ff6b6b,
+                  #feca57,
+                  #48dbfb,
+                  #ff9ff3,
+                  #54a0ff,
+                  #5f27cd,
+                  #ff6b6b);
+          animation: spin 3s linear infinite;
+      }
+
+      .card {
+          background: white;
+          /* padding: 24px; */
+          border-radius: 12px;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+          max-width: 320px;
+          position: relative;
+          border-bottom: 3px solid transparent;
+          background-image:
+              linear-gradient(white, white) padding-box,
+              conic-gradient(from var(--angle),
+                  #ff6b6b,
+                  #feca57,
+                  #48dbfb,
+                  #ff9ff3,
+                  #54a0ff,
+                  #5f27cd,
+                  #ff6b6b) border-box;
+      }
+
+      .card:hover {
+          animation: spin 3s linear infinite;
+      }
+
+      .card:hover h2 {
+          background: linear-gradient(90deg,
+                  #ff6b6b,
+                  #feca57,
+                  #48dbfb,
+                  #ff9ff3,
+                  #54a0ff);
+          background-size: 300% 100%;
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          animation: gradient-text 2s ease infinite;
+      }
+
+      @keyframes gradient-text {
+
+          0%,
+          100% {
+              background-position: 0% 50%;
+          }
+
+          50% {
+              background-position: 100% 50%;
+          }
+      }
+
+      h2 {
+          font-size: 20px;
+          font-weight: 600;
+          color: #1a1a1a;
+          margin-bottom: 8px;
+          transition: all 0.3s ease;
+      }
+
+      p {
+          font-size: 14px;
+          color: #666;
+          line-height: 1.5;
       }
