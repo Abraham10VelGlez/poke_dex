@@ -538,3 +538,62 @@
           color: #666;
           line-height: 1.5;
       }
+
+
+
+
+
+/* =========================================================================================== */
+
+.pokedex-container {
+    display: flex;
+    flex-wrap: wrap;       
+    justify-content: center;
+    gap: 20px;
+    width: 95%;
+    max-width: 1200px;
+    margin-top: 100px;     /* Para que no se tapen por el titulo*/
+    padding: 20px;
+}
+
+.pokemon-card-liquid {
+    background: #1a1a1e;   /* Color mas claro que el fondo principal */
+    border: 1px solid #333;
+    border-radius: 15px;    /* Bordes redondeados */
+    width: 220px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, background 0.3s ease;
+    cursor: pointer;
+}
+
+/* Efecto al pasar el mouse */
+.pokemon-card-liquid:hover {
+    transform: translateY(-5px);
+    background: #252529;
+    border-color: #cb3434; /* Borde diferente al pasar el mouse  */
+}
+
+.pokemon-img {
+    width: 120px;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.pokemon-name-liquid {
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+/* Aplicar el modo claro tambien a las cards */
+body:has(#toggle:checked) .pokemon-card-liquid {
+    background: #ffffff;
+    border-color: #ddd;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+body:has(#toggle:checked) .pokemon-name-liquid {
+    color: #333;
+}
