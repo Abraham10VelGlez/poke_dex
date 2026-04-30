@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Poke Dex</title>
-    <link rel="stylesheet" href="./index.css" />
+    <link rel="stylesheet" href="css/index.css" />
   </head>
 
   <body>
@@ -22,6 +22,41 @@
         </label>
       </div>
     </div>
+
+    <main class="pokedex-container">
+      
+      <div class="pokemon-card-liquid">
+        <img src="https://imgs.search.brave.com/KiD6EBCrsQTyEWAPqi0dKx4WVkEklhf8EmkPTCfi3Tc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bWVkaWEucG9rZWth/bG9zLmZyL2ltZy9w/b2tlbW9uL3Bva2Vn/by9waWthY2h1LWhh/bGxvd2VlbjIwMjEt/Zi1zLnBuZw" alt="Pikachu" class="pokemon-img">
+        <div class="pokemon-name-liquid">Pikachu</div>
+        <div class="pokemon-type-badge">Electric</div>
+      </div>
+
+      <div class="pokemon-card-liquid">
+        <img src="https://imgs.search.brave.com/pcuIemFGn72G90y6d9oll9nn9r17IpZ5ckdCfbFxbRA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9hc3Nl/dHMuZGl0dG9iYXNl/LmNvbS9nby9wb2tl/bW9uLzEtYnVsYmFz/YXVyLWZhbGwtMjAx/OS5wbmc" alt="Bulbasaur" class="pokemon-img">
+        <div class="pokemon-name-liquid">Bulbasaur</div>
+        <div class="pokemon-type-badge">Grass / Poison</div>
+      </div>
+
+      <div class="pokemon-card-liquid">
+        <img src="https://imgs.search.brave.com/PTIGdh4GPGKgwb_q-My2NNb5fgPihfuVZclFfLfjt00/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMucG9rZW1vbnBl/dHMuY29tL2ltYWdl/cy9tb25zdGVycy1p/bWFnZXMtMzAwLTMw/MC80LUNoYXJtYW5k/ZXIud2VicA" alt="Charmander" class="pokemon-img">
+        <div class="pokemon-name-liquid">Charmander</div>
+        <div class="pokemon-type-badge">Fire</div>
+      </div>
+
+      <div class="pokemon-card-liquid">
+        <img src="https://imgs.search.brave.com/ZAbaDG7u57RWRlbkX58YqMGD3KoWaowor7XPrGVuKOY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/cG9rZW1vbmRiLm5l/dC9zcHJpdGVzL2dv/L3NoaW55LzF4L3Nx/dWlydGxlLXN1bmds/YXNzZXMucG5n" alt="Squirtle" class="pokemon-img">
+        <div class="pokemon-name-liquid">Squirtle</div>
+        <div class="pokemon-type-badge">Water</div>
+      </div>
+
+      <div class="pokemon-card-liquid">
+        <img src="https://imgs.search.brave.com/iH2kyLjRw4OvGNW-jJyHX5RHO0Tu5xcUWtgv__j5C_I/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c2VyZWJpaS5uZXQv/c3dvcmRzaGllbGQv/cG9rZW1vbi8wOTQu/cG5n" alt="Gengar" class="pokemon-img">
+        <div class="pokemon-name-liquid">Gengar</div>
+        <div class="pokemon-type-badge">Ghost / Poison</div>
+      </div>
+
+    </main>
+
     <input type="checkbox" id="close-modal" />
 
     <div class="modal">
@@ -37,16 +72,15 @@
     </div>
 
     <script>
+      // Lógica de modal mejorada para que el botón de cerrar funcione con el checkbox
       const modal = document.querySelector(".modal");
       const btn = document.querySelector(".btn-close");
+      const checkbox = document.querySelector("#close-modal");
 
-      btn.addEventListener("click", () => {
-        modal.classList.add("hide");
-      });
-
+      // Si haces click fuera del contenido del modal, se cierra marcando el checkbox
       modal.addEventListener("click", (e) => {
         if (e.target === modal) {
-          modal.classList.add("hide");
+          checkbox.checked = true;
         }
       });
     </script>
