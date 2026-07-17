@@ -25,44 +25,60 @@
             <div class="icon-sun"></div>
           </div>
         </label>
-      </div>
 
-      <button class="menu-btn" id="menuBtn" aria-label="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+        <button class="menu-btn" id="menuBtn" aria-label="Menu">
+          <img src="img/pokeblack.png" class="menu-btn-pokeball" alt="Menu">
+        </button>
+      </div>
     </div>
 
     <nav class="dropdown-menu" id="dropdownMenu">
       <a href="#" class="menu-item" data-id="1">
-        <img src="img/pokeblack.png" alt="Inicio">
-        <span>Inicio</span>
+        <div class="pokeball">
+          <img src="img/pokeblack.png" alt="Inicio" class="pokeball-img">
+          <div class="pokeball-glow"></div>
+        </div>
+        <span class="menu-label">Inicio</span>
       </a>
       <a href="#" class="menu-item" data-id="2">
-        <img src="img/pokeamar.png" alt="Entrenador">
-        <span>Entrenador</span>
+        <div class="pokeball">
+          <img src="img/pokeamar.png" alt="Entrenador" class="pokeball-img">
+          <div class="pokeball-glow"></div>
+        </div>
+        <span class="menu-label">Entrenador</span>
       </a>
       <a href="#" class="menu-item" data-id="3">
-        <img src="img/pokeblack.png" alt="Analisis">
-        <span>Analisis</span>
+        <div class="pokeball">
+          <img src="img/pokeblack.png" alt="Analisis" class="pokeball-img">
+          <div class="pokeball-glow"></div>
+        </div>
+        <span class="menu-label">Analisis</span>
       </a>
       <a href="#" class="menu-item" data-id="4">
-        <img src="img/pokeamar.png" alt="Buscador">
-        <span>Buscador</span>
+        <div class="pokeball">
+          <img src="img/pokeamar.png" alt="Buscador" class="pokeball-img">
+          <div class="pokeball-glow"></div>
+        </div>
+        <span class="menu-label">Buscador</span>
       </a>
       <a href="#" class="menu-item" data-id="5">
-        <img src="img/pokeblack.png" alt="Acerca">
-        <span>Acerca</span>
+        <div class="pokeball">
+          <img src="img/pokeblack.png" alt="Acerca" class="pokeball-img">
+          <div class="pokeball-glow"></div>
+        </div>
+        <span class="menu-label">Acerca</span>
       </a>
       <a href="#" class="menu-item" data-id="6">
-        <img src="img/pokeamar.png" alt="Mas">
-        <span>Mas</span>
+        <div class="pokeball">
+          <img src="img/pokeamar.png" alt="Mas" class="pokeball-img">
+          <div class="pokeball-glow"></div>
+        </div>
+        <span class="menu-label">Mas</span>
       </a>
     </nav>
 
     <main class="pokedex-container" id="pokedex">
-      <div class="loading" id="loading">Cargando Pokemon...</div>
+      
     </main>
 
     <div class="pokemon-modal" id="pokemonModal">
@@ -74,7 +90,6 @@
       <b style="color: white;">Web site free all people, by developed Zury and Abrajam...</b>
     </footer>
     <script>
-      const API_URL = "https://pokeapi.co/api/v2/pokemon?limit=20";
       const pokedex = document.getElementById("pokedex");
       const loading = document.getElementById("loading");
 
@@ -99,61 +114,117 @@
         fairy: "#EE99AC",
       };
 
-      async function fetchPokemon() {
-        try {
-          const res = await fetch(API_URL);
-          const data = await res.json();
+      const TOTAL_POKEMON = 1025;
+      const BATCH = 20;
+      let shuffledIds = [];
+      let currentIndex = 0;
+      let isLoading = false;
+      let allLoaded = false;
 
-          const details = await Promise.all(
-            data.results.map((p) => fetch(p.url).then((r) => r.json()))
-          );
-
-          loading.remove();
-
-          details.forEach((poke) => {
-            const card = document.createElement("div");
-            card.className = "pokemon-card-liquid";
-
-            const imgSrc = poke.sprites.other["official-artwork"].front_default || poke.sprites.front_default;
-            const cryUrl = poke.cries?.latest || null;
-            const types = poke.types
-              .map(
-                (t) =>
-                  `<span class="type-badge" style="background:${TYPE_COLORS[t.type.name] || '#777'}">${t.type.name}</span>`
-              )
-              .join("");
-
-            card.innerHTML = `
-              <div class="pokemon-img-wrapper">
-                <img src="${imgSrc}" alt="${poke.name}" class="pokemon-img" loading="lazy">
-              </div>
-              <div class="pokemon-id">#${String(poke.id).padStart(3, "0")}</div>
-              <div class="pokemon-name-liquid">${poke.name}</div>
-              <div class="pokemon-types">${types}</div>
-              <div class="pokemon-stats">
-                <div class="stat"><span>HP</span><span>${poke.stats[0].base_stat}</span></div>
-                <div class="stat"><span>ATK</span><span>${poke.stats[1].base_stat}</span></div>
-                <div class="stat"><span>DEF</span><span>${poke.stats[2].base_stat}</span></div>
-              </div>
-            `;
-
-            card.dataset.img = imgSrc;
-            card.dataset.name = poke.name;
-            card.dataset.id = poke.id;
-            card.dataset.types = JSON.stringify(poke.types.map(t => ({ name: t.type.name })));
-            card.dataset.stats = JSON.stringify(poke.stats.map(s => ({ name: s.stat.name, value: s.base_stat })));
-            card.dataset.cry = cryUrl || "";
-
-            card.addEventListener("click", () => openPokemonModal(card.dataset));
-            pokedex.appendChild(card);
-          });
-        } catch (err) {
-          loading.textContent = "Error al cargar Pokemon. Intenta de nuevo.";
-          console.error(err);
+      function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
         }
+        return arr;
       }
 
-      fetchPokemon();
+      function createCard(poke) {
+        const card = document.createElement("div");
+        card.className = "pokemon-card-liquid";
+
+        const imgSrc = poke.sprites.other["official-artwork"].front_default || poke.sprites.front_default;
+        const cryUrl = poke.cries?.latest || null;
+        const types = poke.types
+          .map(
+            (t) =>
+              `<span class="type-badge" style="background:${TYPE_COLORS[t.type.name] || '#777'}">${t.type.name}</span>`
+          )
+          .join("");
+
+        card.innerHTML = `
+          <div class="pokemon-img-wrapper">
+            <img src="${imgSrc}" alt="${poke.name}" class="pokemon-img" loading="lazy">
+          </div>
+          <div class="pokemon-id">#${String(poke.id).padStart(3, "0")}</div>
+          <div class="pokemon-name-liquid">${poke.name}</div>
+          <div class="pokemon-types">${types}</div>
+          <div class="pokemon-stats">
+            <div class="stat"><span>HP</span><span>${poke.stats[0].base_stat}</span></div>
+            <div class="stat"><span>ATK</span><span>${poke.stats[1].base_stat}</span></div>
+            <div class="stat"><span>DEF</span><span>${poke.stats[2].base_stat}</span></div>
+          </div>
+        `;
+
+        card.dataset.img = imgSrc;
+        card.dataset.name = poke.name;
+        card.dataset.id = poke.id;
+        card.dataset.types = JSON.stringify(poke.types.map(t => ({ name: t.type.name })));
+        card.dataset.stats = JSON.stringify(poke.stats.map(s => ({ name: s.stat.name, value: s.base_stat })));
+        card.dataset.cry = cryUrl || "";
+
+        card.addEventListener("click", () => openPokemonModal(card.dataset));
+        return card;
+      }
+
+      async function loadBatch() {
+        if (isLoading || allLoaded) return;
+        isLoading = true;
+
+        const batchIds = shuffledIds.slice(currentIndex, currentIndex + BATCH);
+        if (batchIds.length === 0) {
+          allLoaded = true;
+          isLoading = false;
+          const ld = document.getElementById("loading");
+          if (ld) ld.remove();
+          return;
+        }
+        currentIndex += batchIds.length;
+
+        const spinner = document.createElement("div");
+        spinner.className = "loading";
+        spinner.id = "loading";
+        spinner.textContent = "Cargando mas Pokemon...";
+        pokedex.appendChild(spinner);
+
+        try {
+          const details = await Promise.all(
+            batchIds.map((id) =>
+              fetch(`https://pokeapi.co/api/v2/pokemon/${id}`).then((r) => r.json())
+            )
+          );
+
+          spinner.remove();
+
+          details.forEach((poke) => {
+            pokedex.appendChild(createCard(poke));
+          });
+
+          if (currentIndex >= TOTAL_POKEMON) {
+            allLoaded = true;
+          }
+        } catch (err) {
+          spinner.textContent = "Error al cargar. Intenta de nuevo.";
+          console.error(err);
+        }
+
+        isLoading = false;
+      }
+
+      async function init() {
+        shuffledIds = shuffleArray([...Array(TOTAL_POKEMON).keys()].map((i) => i + 1));
+        await loadBatch();
+      }
+
+      window.addEventListener("scroll", () => {
+        if (
+          window.innerHeight + window.scrollY >= document.body.offsetHeight - 400
+        ) {
+          loadBatch();
+        }
+      });
+
+      init();
 
       const menuBtn = document.getElementById("menuBtn");
       const dropdownMenu = document.getElementById("dropdownMenu");
