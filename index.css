@@ -12,8 +12,9 @@
       .shimmer-text {
 
           /* grosor y color del borde */
+          font-family: 'Bungee', cursive;
           font-size: 5em;
-          font-weight: 900;
+          font-weight: 400;
           letter-spacing: -0.02em;
           background: linear-gradient(90deg,
                   #ffffff 0%,
@@ -63,6 +64,7 @@
           display: flex;
           flex-direction: column;
           align-items: center;
+          overflow-x: hidden;
           background: #08080b;
           /* font-family:
               -apple-system,
@@ -321,8 +323,8 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          /* centra el título */
           width: 100%;
+          padding-right: 20px;
       }
 
       /* Título centrado real */
@@ -335,6 +337,8 @@
       /* Botón a la derecha */
       .toggle-wrapper {
           margin-left: auto;
+          display: flex;
+          align-items: center;
       }
 
 
@@ -741,12 +745,322 @@ body:has(#toggle:checked) .stat span:last-child {
     padding: 24px 20px;
     margin-top: 20px;
     border-top: 1px solid #222;
-    color: #666;
+    background: #08080b;
+    color: #fff;
     font-size: 0.85rem;
     letter-spacing: 0.04em;
 }
 
 body:has(#toggle:checked) .footer {
+    background: #faf7f3;
     border-top-color: #ddd;
-    color: #888;
+    color: #111;
+}
+
+/* ---------- MENU BUTTON ---------- */
+
+.menu-btn {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    background: #1a1a1e;
+    border: 1px solid #333;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-left: 16px;
+    transition: background 0.3s, border-color 0.3s;
+    flex-shrink: 0;
+}
+
+.menu-btn span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.menu-btn.active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.menu-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-btn.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+body:has(#toggle:checked) .menu-btn {
+    background: #fff;
+    border-color: #ddd;
+}
+
+body:has(#toggle:checked) .menu-btn span {
+    background: #333;
+}
+
+/* ---------- DROPDOWN MENU ---------- */
+
+.dropdown-menu {
+    position: absolute;
+    top: 140px;
+    right: 30px;
+    background: #1a1a1e;
+    border: 1px solid #333;
+    border-radius: 14px;
+    padding: 8px;
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px) scale(0.95);
+    transition: all 0.25s ease;
+    z-index: 100;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #ccc;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+}
+
+.menu-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+.menu-item img {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+/* Light mode menu */
+body:has(#toggle:checked) .dropdown-menu {
+    background: #fff;
+    border-color: #e0e0e0;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+body:has(#toggle:checked) .menu-item {
+    color: #444;
+}
+
+body:has(#toggle:checked) .menu-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #111;
+}
+
+/* ---------- POKEMON MODAL ---------- */
+
+.pokemon-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.pokemon-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.pokemon-modal-content {
+    position: relative;
+    background: #16161a;
+    border: 1px solid #333;
+    border-radius: 20px;
+    padding: 40px 30px 30px;
+    text-align: center;
+    max-width: 340px;
+    width: 90%;
+    transform: scale(0.6) translateZ(0);
+    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pokemon-modal.show .pokemon-modal-content {
+    transform: scale(1) translateZ(0);
+}
+
+/* Glow image */
+.pokemon-modal-content .modal-pokemon-img {
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 20px rgba(255, 200, 50, 0.7))
+            drop-shadow(0 0 40px rgba(255, 150, 30, 0.4));
+    animation: pokeGlow 2s ease-in-out infinite alternate;
+    margin-bottom: 16px;
+}
+
+@keyframes pokeGlow {
+    0% {
+        filter: drop-shadow(0 0 20px rgba(255, 200, 50, 0.7))
+                drop-shadow(0 0 40px rgba(255, 150, 30, 0.4));
+    }
+    100% {
+        filter: drop-shadow(0 0 30px rgba(100, 200, 255, 0.8))
+                drop-shadow(0 0 60px rgba(80, 150, 255, 0.5));
+    }
+}
+
+.modal-pokemon-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #f0f0f0;
+    text-transform: capitalize;
+    margin-bottom: 6px;
+}
+
+.modal-pokemon-id {
+    color: #666;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+}
+
+.modal-pokemon-types {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.modal-pokemon-types .type-badge {
+    font-size: 0.7rem;
+    padding: 4px 14px;
+}
+
+.modal-pokemon-stats {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #2a2a2e;
+}
+
+.modal-pokemon-stats .stat {
+    font-size: 0.7rem;
+}
+
+.modal-pokemon-stats .stat span:last-child {
+    font-size: 0.9rem;
+}
+
+/* Close button */
+.pokemon-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ccc;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.pokemon-modal-close:hover {
+    background: rgba(255, 80, 80, 0.3);
+    color: #ff5555;
+    transform: rotate(90deg);
+}
+
+/* Sound icon */
+.modal-sound-btn {
+    margin-top: 14px;
+    padding: 8px 20px;
+    border: 1px solid #444;
+    border-radius: 20px;
+    background: transparent;
+    color: #ccc;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.modal-sound-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #888;
+    color: #fff;
+}
+
+.modal-sound-btn.playing {
+    border-color: #48dbfb;
+    color: #48dbfb;
+}
+
+/* Light mode modal */
+body:has(#toggle:checked) .pokemon-modal-content {
+    background: #fff;
+    border-color: #e0e0e0;
+}
+
+body:has(#toggle:checked) .modal-pokemon-name {
+    color: #1a1a1a;
+}
+
+body:has(#toggle:checked) .modal-pokemon-id {
+    color: #999;
+}
+
+body:has(#toggle:checked) .modal-pokemon-stats {
+    border-top-color: #eee;
+}
+
+body:has(#toggle:checked) .pokemon-modal-close {
+    background: rgba(0, 0, 0, 0.06);
+    color: #666;
+}
+
+body:has(#toggle:checked) .pokemon-modal-close:hover {
+    background: rgba(255, 80, 80, 0.15);
+    color: #ff3333;
+}
+
+body:has(#toggle:checked) .modal-sound-btn {
+    border-color: #ccc;
+    color: #555;
+}
+
+body:has(#toggle:checked) .modal-sound-btn:hover {
+    background: rgba(0, 0, 0, 0.04);
+    color: #111;
 }

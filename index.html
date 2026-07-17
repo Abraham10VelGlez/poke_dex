@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Poke Dex</title>
     <link rel="stylesheet" href="index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet" />
+
+    <link rel="icon" type="image/png" href="img/pokeblack.png">
   </head>
 
   <body>
@@ -21,11 +26,49 @@
           </div>
         </label>
       </div>
+
+      <button class="menu-btn" id="menuBtn" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
+
+    <nav class="dropdown-menu" id="dropdownMenu">
+      <a href="#" class="menu-item" data-id="1">
+        <img src="img/pokeblack.png" alt="Inicio">
+        <span>Inicio</span>
+      </a>
+      <a href="#" class="menu-item" data-id="2">
+        <img src="img/pokeamar.png" alt="Entrenador">
+        <span>Entrenador</span>
+      </a>
+      <a href="#" class="menu-item" data-id="3">
+        <img src="img/pokeblack.png" alt="Analisis">
+        <span>Analisis</span>
+      </a>
+      <a href="#" class="menu-item" data-id="4">
+        <img src="img/pokeamar.png" alt="Buscador">
+        <span>Buscador</span>
+      </a>
+      <a href="#" class="menu-item" data-id="5">
+        <img src="img/pokeblack.png" alt="Acerca">
+        <span>Acerca</span>
+      </a>
+      <a href="#" class="menu-item" data-id="6">
+        <img src="img/pokeamar.png" alt="Mas">
+        <span>Mas</span>
+      </a>
+    </nav>
 
     <main class="pokedex-container" id="pokedex">
       <div class="loading" id="loading">Cargando Pokemon...</div>
     </main>
+
+    <div class="pokemon-modal" id="pokemonModal">
+      <div class="pokemon-modal-content" id="pokemonModalContent"></div>
+      <button class="pokemon-modal-close" id="pokemonModalClose">&times;</button>
+    </div>
 
     <footer class="footer">
       <b style="color: white;">Web site free all people, by developed Zury and Abrajam...</b>
@@ -71,6 +114,8 @@
             const card = document.createElement("div");
             card.className = "pokemon-card-liquid";
 
+            const imgSrc = poke.sprites.other["official-artwork"].front_default || poke.sprites.front_default;
+            const cryUrl = poke.cries?.latest || null;
             const types = poke.types
               .map(
                 (t) =>
@@ -80,7 +125,7 @@
 
             card.innerHTML = `
               <div class="pokemon-img-wrapper">
-                <img src="${poke.sprites.other["official-artwork"].front_default || poke.sprites.front_default}" alt="${poke.name}" class="pokemon-img" loading="lazy">
+                <img src="${imgSrc}" alt="${poke.name}" class="pokemon-img" loading="lazy">
               </div>
               <div class="pokemon-id">#${String(poke.id).padStart(3, "0")}</div>
               <div class="pokemon-name-liquid">${poke.name}</div>
@@ -92,6 +137,14 @@
               </div>
             `;
 
+            card.dataset.img = imgSrc;
+            card.dataset.name = poke.name;
+            card.dataset.id = poke.id;
+            card.dataset.types = JSON.stringify(poke.types.map(t => ({ name: t.type.name })));
+            card.dataset.stats = JSON.stringify(poke.stats.map(s => ({ name: s.stat.name, value: s.base_stat })));
+            card.dataset.cry = cryUrl || "";
+
+            card.addEventListener("click", () => openPokemonModal(card.dataset));
             pokedex.appendChild(card);
           });
         } catch (err) {
@@ -102,11 +155,118 @@
 
       fetchPokemon();
 
+      const menuBtn = document.getElementById("menuBtn");
+      const dropdownMenu = document.getElementById("dropdownMenu");
+
+      menuBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menuBtn.classList.toggle("active");
+        dropdownMenu.classList.toggle("show");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!dropdownMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+          menuBtn.classList.remove("active");
+          dropdownMenu.classList.remove("show");
+        }
+      });
+
+      dropdownMenu.querySelectorAll(".menu-item").forEach((item) => {
+        item.addEventListener("click", () => {
+          menuBtn.classList.remove("active");
+          dropdownMenu.classList.remove("show");
+        });
+      });
+
+      const pokemonModal = document.getElementById("pokemonModal");
+      const pokemonModalContent = document.getElementById("pokemonModalContent");
+      const pokemonModalClose = document.getElementById("pokemonModalClose");
+      let currentAudio = null;
+
+      function openPokemonModal(data) {
+        const types = JSON.parse(data.types);
+        const stats = JSON.parse(data.stats);
+
+        const typesHTML = types
+          .map(t => `<span class="type-badge" style="background:${TYPE_COLORS[t.name] || '#777'}">${t.name}</span>`)
+          .join("");
+
+        const statsHTML = stats
+          .filter(s => ["hp", "attack", "defense"].includes(s.name))
+          .map(s => {
+            const label = { hp: "HP", attack: "ATK", defense: "DEF" }[s.name];
+            return `<div class="stat"><span>${label}</span><span>${s.value}</span></div>`;
+          })
+          .join("");
+
+        const soundBtnHTML = data.cry
+          ? `<button class="modal-sound-btn" id="cryBtn">&#128264; Sonido</button>`
+          : "";
+
+        pokemonModalContent.innerHTML = `
+          <img class="modal-pokemon-img" src="${data.img}" alt="${data.name}">
+          <div class="modal-pokemon-id">#${String(data.id).padStart(3, "0")}</div>
+          <div class="modal-pokemon-name">${data.name}</div>
+          <div class="modal-pokemon-types">${typesHTML}</div>
+          <div class="modal-pokemon-stats">${statsHTML}</div>
+          ${soundBtnHTML}
+        `;
+
+        pokemonModal.classList.add("show");
+        document.body.style.overflow = "hidden";
+
+        if (data.cry) {
+          const cryBtn = document.getElementById("cryBtn");
+          cryBtn.addEventListener("click", () => {
+            if (currentAudio) {
+              currentAudio.pause();
+              currentAudio.currentTime = 0;
+              cryBtn.classList.remove("playing");
+              currentAudio = null;
+              return;
+            }
+            currentAudio = new Audio(data.cry);
+            currentAudio.play();
+            cryBtn.classList.add("playing");
+            currentAudio.addEventListener("ended", () => {
+              cryBtn.classList.remove("playing");
+              currentAudio = null;
+            });
+          });
+
+          setTimeout(() => {
+            currentAudio = new Audio(data.cry);
+            currentAudio.play();
+            cryBtn.classList.add("playing");
+            currentAudio.addEventListener("ended", () => {
+              cryBtn.classList.remove("playing");
+              currentAudio = null;
+            });
+          }, 400);
+        }
+      }
+
+      function closePokemonModal() {
+        pokemonModal.classList.remove("show");
+        document.body.style.overflow = "";
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+          currentAudio = null;
+        }
+      }
+
+      pokemonModalClose.addEventListener("click", closePokemonModal);
+      pokemonModal.addEventListener("click", (e) => {
+        if (e.target === pokemonModal) closePokemonModal();
+      });
+
       const modal = document.querySelector(".modal");
       const checkbox = document.querySelector("#close-modal");
       modal.addEventListener("click", (e) => {
         if (e.target === modal) checkbox.checked = true;
       });
+    
     </script>
   </body>
 </html>
